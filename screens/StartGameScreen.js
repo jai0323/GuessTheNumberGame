@@ -1,16 +1,45 @@
-import { StyleSheet, TextInput, View } from "react-native";
-import PrimaryButton from "../components/PrimaryButton";
+import { Alert, StyleSheet, TextInput, View } from "react-native";
+import PrimaryButton from "../components/game/ui/PrimaryButton";
+import { useState } from "react";
+import Colors from "../constants/Colors";
 
-function StartGameScreen(){
+function StartGameScreen({onPickNumber}){
+
+    const [enteredNumber,setEnteredNumber]=useState('');
+
+    function numberInputHandler(enteredText){
+        setEnteredNumber(enteredText);
+    };
+
+    function resetInput(){
+        setEnteredNumber('');
+    };
+
+    function confirmInputHandler(){
+        const chosenNumber = parseInt(enteredNumber);
+
+        if(isNaN(enteredNumber) || enteredNumber<=0 || enteredNumber>99){
+            Alert.alert('Invalid number!','Value has to be a number between 1 and 99',[{text:'Okay', style:'destructive',onPress:resetInput}])
+            return;
+        }
+
+        else{
+            onPickNumber(enteredNumber);
+        }
+    };
+
  return(
     <View style={styles.inputContainer}>
-        <TextInput style={styles.numberinput} maxLength={2} keyboardType="number-pad" autoCapitalize="none" autoCorrect={false}/>
+        <TextInput style={styles.numberinput} maxLength={2} keyboardType="number-pad" autoCapitalize="none" autoCorrect={false}
+        onChangeText={numberInputHandler}
+        value={enteredNumber}
+        />
         <View style={styles.buttonsContainer}>
             <View style={styles.buttonContainer}>
-                <PrimaryButton>Reset</PrimaryButton>
+                <PrimaryButton clicked={resetInput}>Reset</PrimaryButton>
             </View>
             <View style={styles.buttonContainer}>
-                <PrimaryButton>Confirm</PrimaryButton>
+                <PrimaryButton clicked={confirmInputHandler}>Confirm</PrimaryButton>
             </View>
         </View>
     </View>
@@ -27,7 +56,7 @@ const styles=StyleSheet.create({
        borderRadius:8,
        justifyContent:"center",
        alignItems:"center",
-       backgroundColor:"#3b021f",
+       backgroundColor: Colors.primary700,
        elevation:4,
        shadowColor:"black",
        shadowOffset:{width:0,height:2},
@@ -44,9 +73,9 @@ const styles=StyleSheet.create({
     numberinput:{
         height:50,
         fontSize:32,
-        borderBottomColor:'#ddb52f',
+        borderBottomColor: Colors.primary600,
         borderBottomWidth:2,
-        color:'#ddb52f',
+        color: Colors.primary600,
         marginVertical:8,
         fontWeight:'bold',
         width:50,
