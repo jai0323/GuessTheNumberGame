@@ -19,8 +19,9 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     numberText:{
-        fontWeight:'bold',
+        //fontWeight:'bold',
         color: Colors.accent500,
-        fontSize:36
+        fontSize:36,
+        fontFamily:"open-sans-bold"
     }
 })

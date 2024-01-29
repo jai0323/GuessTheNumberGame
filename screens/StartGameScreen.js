@@ -1,7 +1,9 @@
-import { Alert, StyleSheet, TextInput, View } from "react-native";
+import { Alert, StyleSheet, Text, TextInput, View } from "react-native";
 import PrimaryButton from "../components/game/ui/PrimaryButton";
 import { useState } from "react";
 import Colors from "../constants/Colors";
+import Title from "../components/game/ui/Title";
+import Card from "../components/game/ui/Card";
 
 function StartGameScreen({onPickNumber}){
 
@@ -29,19 +31,23 @@ function StartGameScreen({onPickNumber}){
     };
 
  return(
-    <View style={styles.inputContainer}>
-        <TextInput style={styles.numberinput} maxLength={2} keyboardType="number-pad" autoCapitalize="none" autoCorrect={false}
-        onChangeText={numberInputHandler}
-        value={enteredNumber}
-        />
-        <View style={styles.buttonsContainer}>
-            <View style={styles.buttonContainer}>
-                <PrimaryButton clicked={resetInput}>Reset</PrimaryButton>
+    <View style={styles.root}> 
+        <Title>Guess My Number</Title>
+        <Card style={styles.inputContainer}>
+            <Text style={styles.instText}>Enter a Number</Text>
+            <TextInput style={styles.numberinput} maxLength={2} keyboardType="number-pad" autoCapitalize="none" autoCorrect={false}
+            onChangeText={numberInputHandler}
+            value={enteredNumber}
+            />
+            <View style={styles.buttonsContainer}>
+                <View style={styles.buttonContainer}>
+                    <PrimaryButton clicked={resetInput}>Reset</PrimaryButton>
+                </View>
+                <View style={styles.buttonContainer}>
+                    <PrimaryButton clicked={confirmInputHandler}>Confirm</PrimaryButton>
+                </View>
             </View>
-            <View style={styles.buttonContainer}>
-                <PrimaryButton clicked={confirmInputHandler}>Confirm</PrimaryButton>
-            </View>
-        </View>
+        </Card>
     </View>
  );
 }
@@ -49,20 +55,10 @@ function StartGameScreen({onPickNumber}){
 export default StartGameScreen;
 
 const styles=StyleSheet.create({
-    inputContainer:{
-       padding:16,
-       marginTop:100,
-       marginHorizontal:24,
-       borderRadius:8,
-       justifyContent:"center",
-       alignItems:"center",
-       backgroundColor: Colors.primary700,
-       elevation:4,
-       shadowColor:"black",
-       shadowOffset:{width:0,height:2},
-       shadowRadius:6,
-       shadowOpacity:0.25
-    
+    root:{
+        marginTop:100,
+        flex:1,
+        alignItems:'center'
     },
     buttonsContainer:{
         flexDirection:'row'
@@ -80,5 +76,10 @@ const styles=StyleSheet.create({
         fontWeight:'bold',
         width:50,
         textAlign:'center',
+    },
+    instText:{
+        color: Colors.accent500,
+        fontSize:24,
+        fontFamily:'open-sans'
     }
 });
