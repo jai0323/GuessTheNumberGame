@@ -1,23 +1,42 @@
 import { getExpoGoProjectConfig } from "expo";
-import { Image, StyleSheet, Text, View } from "react-native";
+import { Dimensions, Image, StyleSheet, Text, View, useWindowDimensions } from "react-native";
 import Title from "../components/game/ui/Title";
 import Colors from "../constants/Colors";
 import PrimaryButton from "../components/game/ui/PrimaryButton";
 
 function GameOverScreen({roundNumber, userNumber, onStartNewGame}){
+    
+    const {width} = useWindowDimensions();
+    
+    let imageSize = 300
+
+    if(width> 360){
+        imageSize = 0
+    }
+
+    const imageStyle = {
+        width:imageSize,
+        height:imageSize,
+        //borderRadius: imageSize
+    }
+
     return <View style={styles.container}>
         <Title>
             GAME OVER!
         </Title>
-        <View style={styles.imagecontainer}>
+        <View style={[styles.imagecontainer,imageStyle]}>
             <Image style={styles.image}  source={require('../assets/images/mission.png')}/>
         </View>
         <Text style={styles.summaryText}>Your phone  needed <Text style={styles.highlight}>{roundNumber}</Text> rounds to guess the number <Text style={styles.highlight}>{userNumber}</Text>.</Text>
-        <PrimaryButton clicked={onStartNewGame}>Start New Game</PrimaryButton>
+        <View style={styles.button}>
+            <PrimaryButton clicked={onStartNewGame}>Start New Game</PrimaryButton>
+        </View>    
     </View>
 }
 
 export default GameOverScreen;
+
+// const deviceWidth = Dimensions.get('window').width;
 
 const styles = StyleSheet.create({
     container:{
@@ -27,10 +46,10 @@ const styles = StyleSheet.create({
         justifyContent:'center'
     },
  imagecontainer:{
-    width:300,
-    height:300,  
-    overflow:'hidden',
-    padding:30
+    // width: deviceWidth < 360 ? 150 : 300,
+    // height: deviceWidth < 360 ? 150 : 300,  
+    overflow: 'hidden',
+    padding: 30
    
  },
  summaryText:{
@@ -44,5 +63,8 @@ const styles = StyleSheet.create({
     fontFamily:'open-sans-bold',
     color: Colors.primary500,
 
+ },
+ button:{
+    
  }
 })

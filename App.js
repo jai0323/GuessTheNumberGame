@@ -26,8 +26,9 @@ export default function App() {
     setGameIsOver(false);
   };
   
-  function gameOverHandler(){
-    setGameIsOver(true)
+  function gameOverHandler(numberOfRounds){
+    setGameIsOver(true);
+    setGuessRound(numberOfRounds);
   }
   
   function startNewGameHandler(){
@@ -45,6 +46,8 @@ export default function App() {
   }
   
   return (
+    <>
+    <StatusBar style='light' />
       <LinearGradient style={styles.container} colors={["#4e0329","#ddb52f"]}>
       <ImageBackground source={require('./assets/images/background.jpg')} resizeMode='cover' style={styles.container}
       imageStyle={{opacity:0.25}}
@@ -54,6 +57,7 @@ export default function App() {
       </SafeAreaView>
       </ImageBackground>
       </LinearGradient>
+    </>
    
   );
 }

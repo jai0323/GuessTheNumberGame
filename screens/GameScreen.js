@@ -1,4 +1,4 @@
-import { Alert, StyleSheet, Text, View } from "react-native";
+import { Alert, FlatList, StyleSheet, Text, View, useWindowDimensions } from "react-native";
 import Title from "../components/game/ui/Title";
 import Colors from "../constants/Colors";
 import { useEffect, useState } from "react";
@@ -6,10 +6,11 @@ import NumberContainer from "../components/game/NUmberContainer";
 import PrimaryButton from "../components/game/ui/PrimaryButton";
 import Card from "../components/game/ui/Card";
 import { Ionicons } from '@expo/vector-icons';
+import GuessLogItem from "../components/game/GuessLogItem";
 function generateRandomNumber(min, max, exclude){
     const rndNum = Math.floor(Math.random()*(max - min)) + min;
 
-    if(rndNum === exclude){
+    if(rndNum === parseInt(exclude)){
         return generateRandomNumber(min, max, exclude);
     }
     else{
@@ -23,13 +24,13 @@ function GameScreen({userNumber, onGameOver}){
 
     const initialGuess = generateRandomNumber(1, 100, userNumber);
     const [currentGuess, setCurrentGuess] = useState(initialGuess);
-    const [guessRounds,setGuessRound] = useState([]);
-
+    const [guessRounds,setGuessRound] = useState([initialGuess]);
+    const { width, height } = useWindowDimensions();
     useEffect(()=>{
         console.log(typeof(userNumber),typeof(currentGuess))
         if(currentGuess == userNumber){
             console.log(userNumber)
-            onGameOver();
+            onGameOver(guessRounds.length);
         }  
     },[currentGuess,userNumber,onGameOver]);
 
@@ -51,12 +52,13 @@ function GameScreen({userNumber, onGameOver}){
         }
         const newLowerNum = generateRandomNumber(minBoundary, maxBoundary, currentGuess);
         setCurrentGuess(newLowerNum);
+        setGuessRound(prevGuessNumber => [newLowerNum,...prevGuessNumber])
     }
 
-    return(
-        <View style={styles.screen}>
-           <Title>Oppoent's Guess</Title>
-           <NumberContainer>{currentGuess}</NumberContainer>
+    const randomLength = guessRounds.length;
+
+    let content = (<>
+    <NumberContainer>{currentGuess}</NumberContainer>
             <Card>
                 <Text style={styles.instText}>Higher or Lower?</Text>
                 <View style={styles.buttonsContainer}>
@@ -68,8 +70,36 @@ function GameScreen({userNumber, onGameOver}){
                     </View>
                 </View>
             </Card>
-            <View>
-              
+    </>)
+
+     if(width > 500){
+        console.log(width)
+        content = (
+            <>
+            <View style={styles.buttonContainerLand}>
+                    <View style={styles.buttonContainer}>
+                        <PrimaryButton clicked={nextGuessNumber.bind(this,'lower')}><Ionicons name="remove" size={24} color="white" /></PrimaryButton>
+                    </View>
+
+                <NumberContainer>{currentGuess}</NumberContainer>
+
+                    <View style={styles.buttonContainer}>
+                    <PrimaryButton clicked={nextGuessNumber.bind(this, 'greater')}><Ionicons name="add" size={24} color="white" /></PrimaryButton>
+                    </View>
+            </View>
+            </>
+        )
+     }
+    return(
+        <View style={styles.screen}>
+           <Title>Oppoent's Guess</Title>
+           {content}
+            <View style={styles.list}>
+                <FlatList data={guessRounds}
+                 renderItem={(itemData)=> <GuessLogItem roundNumber={randomLength - itemData.index} guess={itemData.item}></GuessLogItem>}
+                 keyExtractor={(item)=>item}
+                />
+              {/* {guessRounds.map(guessRound => <Text key={guessRound}>{guessRound}</Text>)} */}
             </View>
         </View>
 
@@ -83,6 +113,7 @@ const styles = StyleSheet.create({
         flex:1,
         marginTop:25,
         padding:12,
+        alignItems:'center'
     },
     title:{
         fontSize:24,
@@ -105,4 +136,13 @@ const styles = StyleSheet.create({
     buttonContainer:{
         flex:1
     },
+    list:{
+        flex:1,
+        padding:16,
+        marginBottom:0
+    },
+    buttonContainerLand:{
+        flexDirection:"row",
+        alignItems:'center'
+    }
 });
